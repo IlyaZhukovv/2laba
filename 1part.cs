@@ -11,9 +11,14 @@ namespace example
 {
     internal class Program
     {
+        static int tableWidth = 60;
         static void Main()
         {
             int[] matrixSizes = { 100, 200, 400, 1000, 2000, 4000, 10000 };
+
+            Console.WriteLine(new string('-', 55));
+            PrintRow("Matrix Size", "Elapsed Time (s)");
+            Console.WriteLine(new string('-', 55));
 
             foreach (int size in matrixSizes)
             {
@@ -28,9 +33,10 @@ namespace example
                 stopwatch.Stop();
                 TimeSpan elapsedTime = stopwatch.Elapsed;
 
-                Console.WriteLine($"Matrix size: {size}x{size}");
-                Console.WriteLine($"Elapsed Time: {elapsedTime.TotalSeconds} seconds");
+                PrintRow($"{size}x{size}", elapsedTime.TotalSeconds.ToString("0.000"));
             }
+
+            Console.WriteLine(new string('-', tableWidth));
         }
 
         static int[,] GenerateRandomMatrix(int rows, int cols)
@@ -68,8 +74,34 @@ namespace example
                 }
             }
 
-            Console.Write("---------------------------------\n");
             return resultMatrix;
+        }
+
+        static void PrintRow(params string[] columns)
+        {
+            int width = (tableWidth - columns.Length * 3 - 1) / columns.Length;
+            string row = "|";
+
+            foreach (string column in columns)
+            {
+                row += AlignCentre(column, width) + "|";
+            }
+
+            Console.WriteLine(row);
+        }
+
+        static string AlignCentre(string text, int width)
+        {
+            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
+
+            if (string.IsNullOrEmpty(text))
+            {
+                return new string(' ', width);
+            }
+            else
+            {
+                return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
+            }
         }
     }
 }
